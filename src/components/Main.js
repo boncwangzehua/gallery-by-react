@@ -4,6 +4,7 @@ require('../styles/App.scss');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ImgFigure from './ImgFigure.js';
+import ControllerUnit from './ControllerUnit.js';
 //获取json中的数据
 var imagesDatas = require('../datas/imagesDatas.json');
 
@@ -16,7 +17,7 @@ function genImageURL(imageDataArr){
       arr[i] = singleImageData;
     }
     return arr;
-};
+}
 imagesDatas = genImageURL(imagesDatas);
 class AppComponent extends React.Component {
    constructor(props){
@@ -123,6 +124,19 @@ class AppComponent extends React.Component {
         imgsArrangeArr: imgsArrangeArr
     });
   }
+  inverse(index){
+      var imgsArrangeArr = this.state.imgsArrangeArr;
+
+      imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+
+      this.setState({
+        imgsArrangeArr: imgsArrangeArr
+      });
+    
+  }
+  center(index){
+    this.rearrange(index);
+  }
   componentDidMount(){
     // 首先拿到舞台的大小
     var stageDOM = ReactDOM.findDOMNode(this.refs.stage),
@@ -175,14 +189,15 @@ class AppComponent extends React.Component {
             isCenter: false
         };
       }
-      imgFigures.push(<ImgFigure key={index} ref={'imgFigure' + index} data={value} arrange={this.state.imgsArrangeArr[index]}/>);
+      imgFigures.push(<ImgFigure key={index} ref={'imgFigure' + index} data={value} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse.bind(this,index)} center={this.center.bind(this,index)}/>);
+      contorllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse.bind(this,index)} center={this.center.bind(this,index)}/>);
     }, this);
     return (
       <section className="stage" ref="stage">
         <section className="img-sec">
           {imgFigures}
         </section>
-        <nav className="contorller-nav">
+        <nav className="controller-nav">
           {contorllerUnits}
         </nav>
       </section>
